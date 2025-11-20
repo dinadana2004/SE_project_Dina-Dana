@@ -1,28 +1,43 @@
 package domain;
 
-
-/**
-* Represents a book in the library.
-*/
 public class Book {
-private final String title;
-private final String author;
-private final String isbn;
-private boolean borrowed = false;
+    private String isbn;
+    private String title;
+    private String author;
+    private boolean borrowed = false;
 
+    public Book() {}
 
-public Book(String title, String author, String isbn) {
-this.title = title;
-this.author = author;
-this.isbn = isbn;
-}
+    public Book(String isbn, String title, String author) {
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+    }
 
+    // getters/setters
+    public String getIsbn() {
+    	return isbn; }
+    
+    public void setIsbn(String isbn) { 
+    	this.isbn = isbn; }
+    
 
-public String getTitle() { return title; }
-public String getAuthor() { return author; }
-public String getIsbn() { return isbn; }
+    public String getTitle() { 
+    	return title; }
+    
+    public void setTitle(String title) { 
+    	this.title = title; }
 
+    
+    public String getAuthor() { 
+    	return author; }
+    
+    public void setAuthor(String author) { 
+    	this.author = author; }
 
-public boolean isBorrowed() { return borrowed; }
-public void setBorrowed(boolean borrowed) { this.borrowed = borrowed; }
+    
+    public boolean isBorrowed() { 
+    	return borrowed; }
+    public void setBorrowed(boolean borrowed) { 
+    	this.borrowed = borrowed; }
 }
