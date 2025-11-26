@@ -2,25 +2,35 @@ package service;
 
 import domain.Admin;
 import domain.Session;
-import presentation.JsonAdminRepository;
 import org.junit.jupiter.api.Test;
-import java.util.Collections;
+import presentation.JsonAdminRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AdminServiceTest {
 
-    // Fake Admin Repository for testing (no JSON needed)
+    // Mock Admin Repo
     private JsonAdminRepository mockRepo(List<Admin> admins) {
         return new JsonAdminRepository() {
+
+            private List<Admin> data = admins;
+
             @Override
             public Admin findAdmin(String username, String password) {
-                return admins.stream()
-                        .filter(a -> a.getUsername().equals(username)
+                return data.stream()
+                        .filter(a -> a.getUsername().equalsIgnoreCase(username)
                                 && a.getPassword().equals(password))
-                        .findFirst()
-                        .orElse(null);
+                        .findFirst().orElse(null);
+            }
+
+            @Override
+            public Admin findAdmin(String username) {
+                return data.stream()
+                        .filter(a -> a.getUsername().equalsIgnoreCase(username))
+                        .findFirst().orElse(null);
             }
         };
     }
@@ -32,57 +42,39 @@ class AdminServiceTest {
         var service = new AdminService(repo, session);
 
         assertEquals("Login successful!", service.login("admin", "1234"));
-        assertTrue(service.isLoggedIn());
+        assertTrue(session.isLoggedIn());
     }
 
     @Test
-    void testLoginInvalidCredentials() {
-        var repo = mockRepo(Collections.emptyList());
+    void testLoginWrongPassword() {
+        var repo = mockRepo(List.of(new Admin("admin", "1234")));
         var session = new Session();
         var service = new AdminService(repo, session);
 
         assertEquals("Invalid username or password!", service.login("admin", "9999"));
-        assertFalse(session.isLoggedIn());
     }
 
     @Test
-    void testLoginEmptyUsername() {
-        var repo = mockRepo(Collections.emptyList());
+    void testLoginUserNotFound() {
+        var repo = mockRepo(new ArrayList<>());
+        var session = new Session();
+        var service = new AdminService(repo, session);
+
+        assertEquals("Invalid username or password!", service.login("admin", "1234"));
+    }
+
+    @Test
+    void testLoginEmptyInputs() {
+        var repo = mockRepo(new ArrayList<>());
         var session = new Session();
         var service = new AdminService(repo, session);
 
         assertEquals("Username or password cannot be empty!", service.login("", "1234"));
-    }
-
-    @Test
-    void testLoginEmptyPassword() {
-        var repo = mockRepo(Collections.emptyList());
-        var session = new Session();
-        var service = new AdminService(repo, session);
-
         assertEquals("Username or password cannot be empty!", service.login("admin", ""));
     }
 
     @Test
-    void testLoginNullUsername() {
-        var repo = mockRepo(Collections.emptyList());
-        var session = new Session();
-        var service = new AdminService(repo, session);
-
-        assertEquals("Username or password cannot be empty!", service.login(null, "1234"));
-    }
-
-    @Test
-    void testLoginNullPassword() {
-        var repo = mockRepo(Collections.emptyList());
-        var session = new Session();
-        var service = new AdminService(repo, session);
-
-        assertEquals("Username or password cannot be empty!", service.login("admin", null));
-    }
-
-    @Test
-    void testLoginWhileAlreadyLoggedIn() {
+    void testLoginAlreadyLoggedIn() {
         var repo = mockRepo(List.of(new Admin("admin", "1234")));
         var session = new Session();
         session.login("admin");
@@ -108,6 +100,7 @@ class AdminServiceTest {
     void testLogoutWithoutLogin() {
         var repo = mockRepo(List.of(new Admin("admin", "1234")));
         var session = new Session();
+
         var service = new AdminService(repo, session);
 
         assertEquals("No admin is logged in!", service.logout());

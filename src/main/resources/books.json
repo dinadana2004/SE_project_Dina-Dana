@@ -1,1 +1,16 @@
-[{"title":"Test","author":"Someone","isbn":"999"},{"title":"Java Programming","author":"Dana","isbn":"111"},{"title":"Test","author":"Someone","isbn":"999"},{"title":"Java Programming","author":"Dana","isbn":"111"},{"title":"Test","author":"Someone","isbn":"999"},{"title":"Java Programming","author":"Dana","isbn":"111"},{"title":"syn","author":"dima","isbn":"12345"}]
+[
+  {
+    "title": "mathh",
+    "author": "dinna",
+    "isbn": "1122",
+    "borrowed": true,
+    "borrowedByUser": "danaa",
+    "dueDate": "2025-12-22"
+  },
+  {
+    "title": "software",
+    "author": "haya",
+    "isbn": "1221",
+    "borrowed": false
+  }
+]
