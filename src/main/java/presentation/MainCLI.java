@@ -1,5 +1,4 @@
 package presentation;
-
 import domain.Book;
 import domain.Session;
 import domain.UserSession;
@@ -7,6 +6,9 @@ import service.AdminService;
 import service.BookService;
 import service.UserService;
 import service.LoanService;
+import service.EmailSender;
+import service.EmailNotifier;
+import service.ReminderService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -51,6 +53,16 @@ public class MainCLI {
         UserService userService = new UserService(userRepo, userSession);
         LoanService loanService = new LoanService(bookRepo, userRepo);
 
+     // Email configuration (PUT YOUR EMAIL & APP PASSWORD)
+        String gmail = "s12216919@stu.najah.edu";
+        String appPass = "tcgx ovts bvqi dddm";
+
+        // Real email sender
+        EmailSender emailSender = new EmailNotifier(gmail, appPass);
+
+        // Reminder Service
+        ReminderService reminderService = new ReminderService(loanService, userRepo, emailSender);
+
         while (true) {
 
             System.out.println("\n====== Library Management System ======");
@@ -64,7 +76,7 @@ public class MainCLI {
             switch (choice) {
 
                 case 1:
-                    adminMenu(sc, adminService, bookService);
+                	adminMenu(sc, adminService, bookService, reminderService);
                     break;
 
                 case 2:
@@ -95,14 +107,16 @@ public class MainCLI {
      * @param adminService  service handling admin authentication and actions
      * @param bookService   service used for adding new books
      */
-    private static void adminMenu(Scanner sc, AdminService adminService, BookService bookService) {
-
+    private static void adminMenu(Scanner sc, AdminService adminService,
+            BookService bookService, ReminderService reminderService)
+    {
         while (true) {
             System.out.println("\n--- Admin Menu ---");
             System.out.println("1. Login");
             System.out.println("2. Logout");
             System.out.println("3. Add Book");
-            System.out.println("4. Back");
+            System.out.println("4. Send Overdue Reminders");
+            System.out.println("5. Back");
 
             System.out.print("Choose option: ");
             int choice = Integer.parseInt(sc.nextLine());
@@ -136,6 +150,16 @@ public class MainCLI {
                     break;
 
                 case 4:
+                	 if (!adminService.isLoggedIn()) {
+                         System.out.println("You must login first!");
+                         break;
+                     }
+                	 System.out.println("Sending reminders...");
+                    int sent = reminderService.sendReminders();
+                    System.out.println("Emails sent: " + sent);
+                    break;
+
+                case 5:
                     return;
 
                 default:
@@ -198,7 +222,11 @@ public class MainCLI {
                     break;
 
                 case 4:
-                    System.out.print("Keyword:(Title/Author/ISBN) ");
+                	if (!userService.isLoggedIn()) {
+                        System.out.println("You must login first!");
+                        break;
+                    }
+                	System.out.print("Keyword:(Title/Author/ISBN) ");
                     List<Book> r = bookService.search(sc.nextLine());
                     if (r.isEmpty()) System.out.println("No results.");
                     else r.forEach(b -> {
