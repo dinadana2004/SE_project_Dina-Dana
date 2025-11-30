@@ -1,5 +1,6 @@
 package service;
 
+<<<<<<< HEAD
 
 
 
@@ -8,134 +9,80 @@ package service;
  * @author Dina
  * @version 1.0*/
 
+=======
+>>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 import domain.Book;
-import java.util.ArrayList;
+import presentation.JsonBookRepository;
+
 import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Service class responsible for handling book-related operations such as
+ * adding books and searching for books in the library system.
+ *
+ * <p>This service communicates with the {@link JsonBookRepository}
+ * to store and retrieve book data.</p>
+ *
+ * @version 1.0
+ * @author Dana
+ */
 public class BookService {
-	
-	 /** The current book instance associated with this service. */
-	private Book book;
-	
-	 /** The list of all books managed by the service. */
-	private List<Book>books=new ArrayList<>();
-	
-	
-	/**
-	 * constructs a Book
-	 * @param  book the initial book instance to associate with the service */
-	
-	public BookService(Book book) {
-	    this.book = book;
-	    this.books = new ArrayList<>();
-	}
 
-	public BookService() {
-	    this.books = new ArrayList<>();
-	}
+    /** Repository that manages persistent storage of books. */
+    private final JsonBookRepository repo;
 
-	
-	/**
-	 * this function handles the operation of adding a new book
-	 * @param book
-	 * @return  a confirmation message for successful addition */
-	public String  add_NewBook( Book book) {
-		
-		if(book.getAuthor()==null || book.getTitle()==null || book.getIsbn()==null) {
-			return "you should enter the title,author and isbn";
-		}
-		for(Book book1:books) {
-			if(book.getIsbn()==book1.getIsbn()) {
-				return"you have entered a duplicate ISBN ,please enter another ISBN";
-			}
-		}
-		
-		books.add(book);
-		return "book added successfully";
-	}
-	
-	/**
-	 * handles the operation of searching a book by it's Author's Name
-	 * @param author the author's name to search for
-	 * @return list of book that match the provided author name*/
-	
-	public List<Book> search_book_author(String author) {
-		List<Book> searchingResult=new ArrayList<>();
-		for(Book book:books) {
-			if(book.getAuthor().equalsIgnoreCase(author)) {
-				searchingResult.add(book);
-				
-			}
-			
-			
-		}
-		return searchingResult;
-		
-	}
-	
-	/**
-	 * handles the operation of searching a book by it's Title 
-	 * @param title the Book's Title
-	 * @return list of book that match the provided Book's Title*/
-	
-	public List<Book> search_book_title(String title) {
-		List<Book> searchingResult=new ArrayList<>();
-		for(Book book:books) {
-			if(book.getTitle().equalsIgnoreCase(title)) {
-				
-			}
-			
-		}
-		return searchingResult;
-	}
-	
-	
-	/**
-	 * handles the operation of searching a book by it's Isbn 
-	 * @param isbn the Book's isbn
-	 * @return list of book that match the provided Book's isbn*/
-	
-	public Book search_book_isbn(String isbn) {
-		
-		for(Book book:books) {
-			if(book.getIsbn().equalsIgnoreCase(isbn)) {
-				return book;
-			}
-			
-		}
-		return null;
-	}
-	
-	/**
-	 * @param book the book user want to borrow
-	 * @return confirmation message that shows the dueDate the user should return the book back within */
-	
-	
-	public String borrowBook(Book book) {
-		if(book.getisBorrowedOrNot()) {
-			return"you can not borrow this book";
-		}
-		else {
-			book.wantToBorrowBook();
-			return"book borrowed successfully,you can have this book till" +book.getdueDate();
-			
-		}
-		
-	}
-	
-	/** 
-	 *@param book the book user want to return
-	 *@return confirmation message the ensure that the book has returned */
-	
-	public String returnBook(Book book) {
-		if(book.getisBorrowedOrNot()) {
-			book.wantToReturnBook();
-			return"book returned successfully,thank you for returning the book back within the expected time ";
-			
-		}
-		else {
-			return"this book is already returned";
-		}
-		
-	}
+    /**
+     * Constructs a BookService with the given book repository.
+     *
+     * @param repo the repository used to save and retrieve books
+     */
+    public BookService(JsonBookRepository repo) {
+        this.repo = repo;
+    }
 
+    /**
+     * Adds a new book to the library after validating its data.
+     *
+     * @param b the {@link Book} object to be added
+     * @return a status message describing whether the operation succeeded or failed
+     */
+    public String addBook(Book b) {
+
+        if (b == null)
+            return "Book cannot be null!";
+
+        if (b.getTitle().trim().isEmpty() ||
+            b.getAuthor().trim().isEmpty() ||
+            b.getIsbn().trim().isEmpty()) {
+            return "Book title, author, and ISBN cannot be empty!";
+        }
+
+        if (repo.findByIsbn(b.getIsbn()) != null)
+            return "A book with this ISBN already exists!";
+
+        repo.save(b);
+        return "Book added successfully!";
+    }
+
+    /**
+     * Searches for books whose title, author, or ISBN match the specified keyword.
+     *
+     * @param keyword the search term (case-insensitive); if empty, all books are returned
+     * @return a list of matching {@link Book} objects
+     */
+    public List<Book> search(String keyword) {
+
+        if (keyword == null || keyword.trim().isEmpty())
+            return repo.findAll();
+
+        String q = keyword.toLowerCase();
+
+        return repo.findAll().stream()
+                .filter(b ->
+                        b.getTitle().toLowerCase().contains(q) ||
+                        b.getAuthor().toLowerCase().contains(q) ||
+                        b.getIsbn().toLowerCase().contains(q))
+                .collect(Collectors.toList());
+    }
 }

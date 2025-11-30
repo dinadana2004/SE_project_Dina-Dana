@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>socialmedia</groupId>
-    <artifactId>seproject</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+  <groupId>com.library</groupId>
+  <artifactId>library-system</artifactId>
+  <version>1.0</version>
 
+<<<<<<< HEAD
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -21,4 +20,37 @@
 </dependency>
 
     </dependencies>
+=======
+  <dependencies>
+      <dependency>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+          <version>2.10.1</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter</artifactId>
+          <version>5.10.0</version>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-core</artifactId>
+          <version>5.11.0</version>
+          <scope>test</scope>
+      </dependency>
+  </dependencies>
+
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>0.8.10</version>
+          </plugin>
+      </plugins>
+  </build>
+>>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 </project>

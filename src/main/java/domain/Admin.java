@@ -1,62 +1,50 @@
 package domain;
 
 /**
- * Represents an administrator who can log in and manage the library system.
- * This class handles login verification and logout functionality.
+ * Represents an administrator of the library system.
+ * <p>
+ * An admin has a username and password and is responsible for logging into the
+ * admin panel to perform administrative tasks such as adding books.
+ * </p>
  * 
- * @author Dina
+ * @author Dana
  * @version 1.0
  */
-
 public class Admin {
-	private String username;
-	private String password;
-	private boolean loged;
-	
-	 /**
-     * Constructs an Admin with the specified username and password.
-     *
-     * @param username the administrator's username
-     * @param password the administrator's password
+
+    /** The admin's username. */
+    private String username;
+
+    /** The admin's password. */
+    private String password;
+
+    /**
+     * Default constructor required for JSON deserialization.
      */
-	public Admin (String username,String password) {
-		this.username=username;
-		this.password=password;
-		this.loged=false;
-	}
-	
-	/**
-	 * THIS FUNTION IS USED TO VERIFY THE USERENAME AND PASSWORD the person has entered
-	 * @param enteredname which is the the username of the adminstartor we want to check it whether it is correct or not
-	 * @param  enteredpassword which is the the password of the adminstartor we want to check it whether it is correct or not
-	 * @return true if the credentials are correct and the admin is loged in, otherwise return false and admin is not loged in*/
-	
-	public boolean verifyingLogin(String enteredname,String enteredpassword) {
-		if( username.equals(enteredname) && password.equals(enteredpassword)) {
-			loged=true;
-			return true;
-		}
-		else{
-			return false;
-		}
-		
-	}
-	
-	/**
-	 * this funtion set loged to false in indication to that this  admin has loged out and he need to relogin if this admin want to do any service */
-	
-	public void logout(){
-		loged=false;
-	}
-	
-	/**
-	 * this function checks wheter the admin is loged in or not 
-	 * @return true if loged is true otherwise return false*/
-	
-	
-	public boolean is_loged() {
-		return loged;
-	}
-	
-	
+    public Admin() {}
+
+    /**
+     * Creates a new Admin with the specified username and password.
+     *
+     * @param username the admin's username
+     * @param password the admin's password
+     */
+    public Admin(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
+     * Returns the admin's username.
+     *
+     * @return the username
+     */
+    public String getUsername() { return username; }
+
+    /**
+     * Returns the admin's password.
+     *
+     * @return the password
+     */
+    public String getPassword() { return password; }
 }
