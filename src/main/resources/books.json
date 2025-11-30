@@ -1,16 +1,10 @@
 [
   {
-    "title": "mathh",
-    "author": "dinna",
-    "isbn": "1122",
+    "title": "Java",
+    "author": "James",
+    "isbn": "111",
     "borrowed": true,
-    "borrowedByUser": "danaa",
-    "dueDate": "2025-12-22"
-  },
-  {
-    "title": "software",
-    "author": "haya",
-    "isbn": "1221",
-    "borrowed": false
+    "borrowedByUser": "dina",
+    "dueDate": "2025-10-29"
   }
 ]
