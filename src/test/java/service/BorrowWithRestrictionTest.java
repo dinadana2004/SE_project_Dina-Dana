@@ -1,6 +1,5 @@
 package service;
 
-
 import domain.Book;
 import domain.User;
 import org.junit.jupiter.api.Test;
