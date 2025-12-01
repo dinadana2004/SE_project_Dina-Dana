@@ -1,69 +1,34 @@
 <project>
-  <modelVersion>4.0.0</modelVersion>
-
-  <groupId>com.library</groupId>
-  <artifactId>library-system</artifactId>
-  <version>1.0</version>
-
-<<<<<<< HEAD
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-    <groupId>com.sun.mail</groupId>
-    <artifactId>jakarta.mail</artifactId>
-    <version>2.0.1</version>
-</dependency>
-
-    </dependencies>
-=======
-  <dependencies>
-      <dependency>
-          <groupId>com.google.code.gson</groupId>
-          <artifactId>gson</artifactId>
-          <version>2.10.1</version>
-      </dependency>
-
-      <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter</artifactId>
-          <version>5.10.0</version>
-          <scope>test</scope>
-      </dependency>
-
-      <dependency>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-core</artifactId>
-          <version>5.11.0</version>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-    <groupId>com.sun.mail</groupId>
-    <artifactId>javax.mail</artifactId>
-    <version>1.6.2</version>
-</dependency>
-
+<modelVersion>4.0.0</modelVersion>
+<groupId>com.library</groupId>
+<artifactId>library-system</artifactId>
+<version>1.0</version>
+<dependencies>
 <dependency>
-    <groupId>org.mockito</groupId>
-    <artifactId>mockito-core</artifactId>
-    <version>5.7.0</version>
-    <scope>test</scope>
+<groupId>com.google.code.gson</groupId>
+<artifactId>gson</artifactId>
+<version>2.10.1</version>
 </dependency>
-
-  </dependencies>
-
-  <build>
-      <plugins>
-          <plugin>
-              <groupId>org.jacoco</groupId>
-              <artifactId>jacoco-maven-plugin</artifactId>
-              <version>0.8.10</version>
-          </plugin>
-      </plugins>
-  </build>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
+<dependency>
+<groupId>org.junit.jupiter</groupId>
+<artifactId>junit-jupiter</artifactId>
+<version>5.10.0</version>
+<scope>test</scope>
+</dependency>
+<dependency>
+<groupId>org.mockito</groupId>
+<artifactId>mockito-core</artifactId>
+<version>5.11.0</version>
+<scope>test</scope>
+</dependency>
+</dependencies>
+<build>
+<plugins>
+<plugin>
+<groupId>org.jacoco</groupId>
+<artifactId>jacoco-maven-plugin</artifactId>
+<version>0.8.10</version>
+</plugin>
+</plugins>
+</build>
 </project>

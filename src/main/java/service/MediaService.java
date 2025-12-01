@@ -41,9 +41,9 @@ public class MediaService {
     		return"this user does not exist";
     	}
     	Object media = bookRepo.findByIsbn(isbn);
-        if (!(media instanceof CD))
+        if (!(media instanceof Cd))
             return "CD not found.";
-        Cd cd = (CD) media;
+        Cd cd = (Cd) media;
         if(cd.isBorrowed()) {
         	return"this CD is currently Borrowed";
         }

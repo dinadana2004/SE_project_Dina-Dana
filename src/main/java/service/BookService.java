@@ -1,16 +1,5 @@
 package service;
 
-<<<<<<< HEAD
-
-
-
-/**
- * this handles the services of the Book like searching and adding new Book
- * @author Dina
- * @version 1.0*/
-
-=======
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 import domain.Book;
 import presentation.JsonBookRepository;
 

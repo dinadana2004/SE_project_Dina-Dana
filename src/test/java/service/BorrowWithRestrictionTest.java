@@ -1,6 +1,5 @@
 package service;
 
-package service;
 
 import domain.Book;
 import domain.User;

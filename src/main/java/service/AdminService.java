@@ -4,7 +4,7 @@ import domain.Admin;
 import domain.User;
 import domain.Session;
 import presentation.JsonAdminRepository;
-import presentation.JasonUserRepository;
+import presentation.JsonUserRepository;
 
 /**
  * Service class responsible for managing admin-related operations such as login and logout.

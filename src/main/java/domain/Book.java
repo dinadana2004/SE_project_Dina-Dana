@@ -85,10 +85,7 @@ public class Book {
      * @param username the username of the borrower
      * @param dueDate  the date the book is due to be returned
      */
-    public void borrow(String password, LocalDate dueDate) {
-    	 User user = userRepo.findById(password);
-    	 if (user == null) throw new IllegalArgumentException("User not found");
-    	
+    public void borrow(String username, LocalDate dueDate) {
         this.borrowed = true;
         this.borrowedByUser = username;
         this.dueDate = dueDate;
