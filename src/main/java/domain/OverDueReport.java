@@ -4,9 +4,9 @@ import java.util.List;
  * this is responsible for generating a report that summaries what  book or CD is overdued for a user
  * this report give you the total fines you must pay*/
 public class OverDueReport {
-	 private final List<Book> overdueBooks = null;
-	    private final List<Cd> overdueCDs = null;
-	    private final int totalFine = 0;
+	 private  List<Book> overdueBooks = null;
+	    private  List<Cd> overdueCDs = null;
+	    private int totalFine = 0;
 	    
 	    /**
 	     * constructor to construc a report that reprsents the total fines
@@ -15,7 +15,7 @@ public class OverDueReport {
 	     * @param totalFine combined fine for all media types(CD,Book)
 	     * @return 
 	     *  */
-	    public OverdueReport(List<Book> overdueBooks, List<CD> overdueCDs, int totalFine) {
+	    public  void OverdueReport(List<Book> overdueBooks, List<Cd> overdueCDs, int totalFine) {
 	        this.overdueBooks = overdueBooks;
 	        this.overdueCDs = overdueCDs;
 	        this.totalFine = totalFine;

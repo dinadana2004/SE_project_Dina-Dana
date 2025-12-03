@@ -1,58 +1,77 @@
 package service;
-import domain.Book;
-import domain.User;
-import domain.Cd;
-import org.junit.jupiter.api.Test;
-import presentation.JsonBookRepository;
-import presentation.JsonUserRepository;
+
+import domain.Media;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * this service handles the opreration of borrowing a CD*/
-
+ * Service for managing media items (books, CDs) and borrowing operations.
+ */
 public class MediaService {
-	private final JsonUserRepository userRepo;
-    private final JsonBookRepository bookRepo;
-    private final LoanService loanService;
-    
+
+    private final List<Media> mediaList = new ArrayList<>();
+
     /**
-     * contuctor to constructs a new mMediaService object
-     * @param userRepo the repository of the user
-     * @param bookRepo the CD repository
-     * @param loanService the loan repository*/
-    
-    public MediaService(JsonUserRepository userRepo,JsonBookRepository bookRepo,LoanService loanService) {
-    	this.bookRepo=bookRepo;
-    	this.loanService=loanService;
-    	this.userRepo=userRepo;
-    }
-    
-    /**
-     * this method is used for borrowing CD operation
-     * @param username the username of the user who want to borrow the cd
-     * @param isbn the isbn of the cd which will be borrowed
-     * @return a message describing whether the operation succeeded or not*/
-    
-    public String BorrowCD(String username,String isbn) {
-    	User user=userRepo.findUser(username);
-    	if(user==null) {
-    		return"this user does not exist";
-    	}
-    	Object media = bookRepo.findByIsbn(isbn);
-        if (!(media instanceof Cd))
-            return "CD not found.";
-        Cd cd = (Cd) media;
-        if(cd.isBorrowed()) {
-        	return"this CD is currently Borrowed";
+     * Adds a media item to the system.
+     *
+     * @param m the media item to add
+     */
+    public void addMedia(Media m) {
+        if (m != null) {
+            mediaList.add(m);
         }
-        LocalDate dueDate = LocalDate.now().plusDays(7);
-        cd.borrow(username, dueDate);
-        bookRepo.update();
-
-        return "CD borrowed successfully you should bringthe CD back till Due date: " + dueDate;
     }
-    
 
+    /**
+     * Returns all media items currently in the system.
+     *
+     * @return list of media items
+     */
+    public List<Media> getAllMedia() {
+        return mediaList;
+    }
+
+    /**
+     * Borrows a media item by title for the given user using today's date.
+     *
+     * @param username the username of the borrower
+     * @param title    the title of the media item
+     * @return a status message describing the result
+     */
+    public String borrowMedia(String username, String title) {
+        return borrowMedia(username, title, LocalDate.now());
+    }
+
+    /**
+     * Borrows a media item by title for the given user and date (testable).
+     *
+     * @param username the username of the borrower
+     * @param title    the title of the media item
+     * @param today    the current date (for testing or real use)
+     * @return a status message describing the result
+     */
+    public String borrowMedia(String username, String title, LocalDate today) {
+
+        if (username == null || username.trim().isEmpty() ||
+            title == null || title.trim().isEmpty()) {
+            return "Username and title cannot be empty!";
+        }
+
+        for (Media m : mediaList) {
+            if (m.getTitle().equalsIgnoreCase(title)) {
+
+                if (m.isBorrowed()) {
+                    return "Media is already borrowed!";
+                }
+
+                LocalDate due = today.plusDays(m.getBorrowDays());
+                m.borrow(username, due);
+                return "Media borrowed successfully! Due date: " + due;
+            }
+        }
+
+        return "Media not found!";
+    }
 }
