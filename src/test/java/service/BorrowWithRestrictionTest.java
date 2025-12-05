@@ -1,6 +1,5 @@
 package service;
 
-
 import domain.Book;
 import domain.User;
 import org.junit.jupiter.api.Test;
@@ -8,55 +7,134 @@ import presentation.JsonBookRepository;
 import presentation.JsonUserRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BorrowWithRestrictionTest {
+class BorrowUnderRestrictiondsTest {
 
-    private JsonUserRepository mockUserRepo(List<User> users) {
-        return new JsonUserRepository(users);
+   
+    private JsonUserRepository mockUserRepo() {
+        return new JsonUserRepository();
     }
 
-    private JsonBookRepository mockBookRepo(List<Book> books) {
-        return new JsonBookRepository(books);
+   
+    private JsonBookRepository mockBookRepo() {
+        return new JsonBookRepository();
     }
+
+  
+    private LoanService mockLoanService(JsonBookRepository br, JsonUserRepository ur) {
+        return new LoanService(br, ur);
+    }
+
 
     @Test
-    void borrowBlockedWhenUserHasOverdueBooks() {
-        User u = new User("alice", "pw", "a@mail", 0);
-        Book b1 = new Book("T", "A", "111");
-        b1.borrow("alice", LocalDate.now().minusDays(30)); // overdue
-        Book b2 = new Book("Other","B","222");
-        JsonUserRepository ur = mockUserRepo(List.of(u));
-        JsonBookRepository br = mockBookRepo(List.of(b1,b2));
-        AdminService admin = new AdminService(new presentation.JsonAdminRepository(), new domain.Session());
-        LoanService loan = new LoanService(br, ur);
-        AdvancedService adv = new AdvancedService(ur, br, admin, loan);
+    void testBorrowSuccess() {
+        JsonUserRepository ur = mockUserRepo();
+        JsonBookRepository br = mockBookRepo();
 
-        String res = adv.borrowWithRestrictions("alice", "222");
-        assertEquals("User has overdue books and cannot borrow books.", res);
+        ur.save(new User("alice", "pw", "a@mail", 0));
+        br.save(new Book("Java", "Dana", "111"));
+
+        LoanService loan = mockLoanService(br, ur);
+        AdminService admin = new AdminService(null, new domain.Session());
+
+        BorrowUnderRestrictionds service =
+                new BorrowUnderRestrictionds(ur, br, admin, loan);
+
+        assertEquals("Borrowed successfully!", service.borrowRestrictions("alice", "111"));
     }
 
+
     @Test
-    void unregisterBlockedWhenActiveLoansOrFines() {
-        User u = new User("bob","pw","b@mail",0);
-        Book b1 = new Book("X","Y","333");
-        b1.borrow("bob", LocalDate.now().plusDays(5)); // active loan
-        JsonUserRepository ur = mockUserRepo(List.of(u));
-        JsonBookRepository br = mockBookRepo(List.of(b1));
-        AdminService admin = new AdminService(new presentation.JsonAdminRepository(), new domain.Session());
-        LoanService loan = new LoanService(br, ur);
-        AdvancedService adv = new AdvancedService(ur, br, admin, loan);
+    void testBorrowUsernameEmpty() {
+        JsonUserRepository ur = mockUserRepo();
+        JsonBookRepository br = mockBookRepo();
+        LoanService loan = mockLoanService(br, ur);
+        AdminService admin = new AdminService(null, new domain.Session());
 
-        // admin not logged -> cannot unregister
-        String res = adv.unregisterUser("bob");
-        assertEquals("Only admins can unregister users.", res);
+        BorrowUnderRestrictionds service =
+                new BorrowUnderRestrictionds(ur, br, admin, loan);
 
-        // simulate admin login
-        admin.login("admin","admin"); // assuming default admin exists in repo
-        res = adv.unregisterUser("bob");
-        assertEquals("User has active loans and cannot be unregistered.", res);
+        assertEquals("username shouldn't be empty", service.borrowRestrictions("", "111"));
+    }
+
+
+    @Test
+    void testBorrowIsbnEmpty() {
+        JsonUserRepository ur = mockUserRepo();
+        JsonBookRepository br = mockBookRepo();
+        LoanService loan = mockLoanService(br, ur);
+        AdminService admin = new AdminService(null, new domain.Session());
+
+        BorrowUnderRestrictionds service =
+                new BorrowUnderRestrictionds(ur, br, admin, loan);
+
+        assertEquals("isbn shouldn't be empty", service.borrowRestrictions("alice", ""));
+    }
+
+
+    @Test
+    void testBorrowUserDoesNotExist() {
+        JsonUserRepository ur = mockUserRepo();
+        JsonBookRepository br = mockBookRepo();
+        LoanService loan = mockLoanService(br, ur);
+        AdminService admin = new AdminService(null, new domain.Session());
+
+        BorrowUnderRestrictionds service =
+                new BorrowUnderRestrictionds(ur, br, admin, loan);
+
+        assertEquals("this user does not exist", service.borrowRestrictions("bob", "111"));
+    }
+
+
+    @Test
+    void testBorrowRejectedDueToUnpaidFines() {
+        JsonUserRepository ur = mockUserRepo();
+        JsonBookRepository br = mockBookRepo();
+
+        User u = new User("alice", "pw", "mail", 50); 
+        ur.save(u);
+        br.save(new Book("Java", "Dana", "111"));
+
+        LoanService loan = mockLoanService(br, ur);
+        AdminService admin = new AdminService(null, new domain.Session());
+
+        BorrowUnderRestrictionds service =
+                new BorrowUnderRestrictionds(ur, br, admin, loan);
+
+        assertEquals(
+                "this borrowing operation has rejected because this user has unpaid fines,he/she should pay the fines first in order to borrow a book",
+                service.borrowRestrictions("alice", "111")
+        );
+    }
+
+
+    @Test
+    void testBorrowRejectedDueToOverdueBooks() {
+        JsonUserRepository ur = mockUserRepo();
+        JsonBookRepository br = mockBookRepo();
+
+        User u = new User("alice", "pw", "mail", 0);
+        ur.save(u);
+
+        Book overdue = new Book("Old", "X", "222");
+        overdue.borrow("alice", LocalDate.now().minusDays(30)); 
+        br.save(overdue);
+
+        Book normal = new Book("New", "Y", "111");
+        br.save(normal);
+
+        LoanService loan = mockLoanService(br, ur);
+        AdminService admin = new AdminService(null, new domain.Session());
+
+        BorrowUnderRestrictionds service =
+                new BorrowUnderRestrictionds(ur, br, admin, loan);
+
+        assertEquals("User has overdue books and cannot borrow books.",
+                service.borrowRestrictions("alice", "111"));
     }
 }
 

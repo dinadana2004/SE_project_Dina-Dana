@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * this service is responsible for checking whether the borrowing operation is accepted or not depending on whether the user has an overdue book or unpaid fine 
  * the borrowing operation is rejected if the user has an overdue book or unpaid fines
- * also this service is responsible for unregistering an inactive user ,this operation is only done by the administrator only , and the unregestered user should not have an overdue book or unpaid fines
+ * 
  * */
 
 
@@ -82,38 +82,7 @@ public class BorrowUnderRestrictionds {
     	
     }
     
-    /**
-     * this method is used to unrejister an inactive user that does not have unpaid fines or loans
-     * @param username the username of the user which the admin want to unrejister
-     * return message that describes whether the unrejister operation is accepted or rejected*/
     
-    public String unregisterUser(String username) {
-    	 if (!adminService.isLoggedIn())
-             return "Only admins can unregister users.";
-    	 
-    	 if(username==null||username.trim().isEmpty()) {
-     		return"username shouldn't be empty";
-     		
-     	}
-    	 
-    	 User user=userRepo.findUser(username);
-     	if(user==null) {
-     		return"this user does not exist";
-     	}
-     	if (user.hasUnpaidFines())
-            return "User has unpaid fines and cannot be unregistered.";
-     	
-     	boolean isActive = bookRepo.findAll().stream()
-                .anyMatch(b -> b.isBorrowed() && username.equalsIgnoreCase(b.getBorrowedByUser()));
-        if (isActive)
-            return "User has active loans and cannot be unregistered.";
-        
-        List<User> list = userRepo.findAll();
-        list.removeIf(u -> u.getUsername().equalsIgnoreCase(username));
-        userRepo.update();
-
-        return "User unregistered successfully.";
-     	
      	
     	 
     }
@@ -121,4 +90,4 @@ public class BorrowUnderRestrictionds {
 
 	
 
-}
+

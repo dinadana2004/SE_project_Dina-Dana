@@ -40,8 +40,8 @@ class BookServiceTest {
 
     @Test
     void testAddBookSuccess() {
-        var repo = mockBookRepo();
-        var service = new BookService(repo);
+        JsonBookRepository repo = mockBookRepo();
+        BookService service = new BookService(repo);
 
         Book b = new Book("Java", "Dana", "111");
         assertEquals("Book added successfully!", service.addBook(b));
@@ -49,16 +49,16 @@ class BookServiceTest {
 
     @Test
     void testAddBookNull() {
-        var repo = mockBookRepo();
-        var service = new BookService(repo);
+        JsonBookRepository repo = mockBookRepo();
+        BookService service = new BookService(repo);
 
         assertEquals("Book cannot be null!", service.addBook(null));
     }
 
     @Test
     void testAddBookEmptyFields() {
-        var repo = mockBookRepo();
-        var service = new BookService(repo);
+        JsonBookRepository repo = mockBookRepo();
+        BookService service = new BookService(repo);
 
         Book b = new Book("", "A", "999");
         assertEquals("Book title, author, and ISBN cannot be empty!", service.addBook(b));
@@ -66,10 +66,10 @@ class BookServiceTest {
 
     @Test
     void testAddBookDuplicateISBN() {
-        var repo = mockBookRepo();
+        JsonBookRepository repo = mockBookRepo();
         repo.save(new Book("Old", "X", "999"));
 
-        var service = new BookService(repo);
+        BookService service = new BookService(repo);
         Book b = new Book("New", "Y", "999");
 
         assertEquals("A book with this ISBN already exists!", service.addBook(b));
@@ -77,31 +77,31 @@ class BookServiceTest {
 
     @Test
     void testSearchEmptyKeyword() {
-        var repo = mockBookRepo();
+        JsonBookRepository repo = mockBookRepo();
         repo.save(new Book("Java", "Dana", "111"));
         repo.save(new Book("Python", "Ali", "222"));
 
-        var service = new BookService(repo);
+        BookService service = new BookService(repo);
 
         assertEquals(2, service.search("").size());
     }
 
     @Test
     void testSearchMatch() {
-        var repo = mockBookRepo();
+        JsonBookRepository repo = mockBookRepo();
         repo.save(new Book("Advanced Java", "Dana", "111"));
 
-        var service = new BookService(repo);
+        BookService service = new BookService(repo);
 
         assertEquals(1, service.search("java").size());
     }
 
     @Test
     void testSearchNoMatch() {
-        var repo = mockBookRepo();
+        JsonBookRepository repo = mockBookRepo();
         repo.save(new Book("Advanced Java", "Dana", "111"));
 
-        var service = new BookService(repo);
+        BookService service = new BookService(repo);
 
         assertEquals(0, service.search("banana").size());
     }
