@@ -1,9 +1,10 @@
 package service;
+import domain.FineStrategy;
 
 import org.junit.jupiter.api.Test;
 import service.BookFineStrategy;
 import service.CDFineStrategy;
-import service.FineStrategy;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 

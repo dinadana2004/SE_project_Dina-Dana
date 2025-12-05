@@ -1,11 +1,12 @@
 package domain;
 import java.util.List;
+
 /**
  * this is responsible for generating a report that summaries what  book or CD is overdued for a user
  * this report give you the total fines you must pay*/
 public class OverDueReport {
 	 private  List<Book> overdueBooks = null;
-	    private  List<Cd> overdueCDs = null;
+	    private  List<CD> overdueCDs = null;
 	    private int totalFine = 0;
 	    
 	    /**
@@ -15,7 +16,7 @@ public class OverDueReport {
 	     * @param totalFine combined fine for all media types(CD,Book)
 	     * @return 
 	     *  */
-	    public  void OverdueReport(List<Book> overdueBooks, List<Cd> overdueCDs, int totalFine) {
+	    public  void OverdueReport(List<Book> overdueBooks, List<CD> overdueCDs, int totalFine) {
 	        this.overdueBooks = overdueBooks;
 	        this.overdueCDs = overdueCDs;
 	        this.totalFine = totalFine;
@@ -24,7 +25,7 @@ public class OverDueReport {
 	    public List<Book> getOverdueBooks() { return overdueBooks; }
 
 	    /** @return overdue CDs */
-	    public List<Cd> getOverdueCDs() { return overdueCDs; }
+	    public List<CD> getOverdueCDs() { return overdueCDs; }
 
 	    /** @return total fine amount */
 	    public int getTotalFine() { return totalFine; }

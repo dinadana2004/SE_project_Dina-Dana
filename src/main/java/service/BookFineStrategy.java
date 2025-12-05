@@ -1,4 +1,5 @@
 package service;
+import domain.FineStrategy;
 
 /**
  * Fine strategy for books: 10 NIS per overdue day.

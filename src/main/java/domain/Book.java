@@ -42,7 +42,7 @@ public class Book {
     /**
      * Default constructor required for JSON deserialization.
      */
-    public Book() {  super(null, null, true);}
+    public Book() {}
 
     /**
      * Creates a new Book object with the specified title, author, and ISBN.
@@ -51,9 +51,7 @@ public class Book {
      * @param author the author of the book
      * @param isbn   the ISBN identifier
      */
-   
     public Book(String title, String author, String isbn) {
-    	super(isbn, title, true);
         this.title = title;
         this.author = author;
         this.isbn = isbn;
@@ -100,11 +98,5 @@ public class Book {
         this.borrowed = false;
         this.borrowedByUser = null;
         this.dueDate = null;
-    }
-    /**
-     * this method is responsible to return the number of days for overdue a book
-     * @return number of days the user can borrow the book*/
-    public int getBorrowDays() {
-        return 28;  
     }
 }

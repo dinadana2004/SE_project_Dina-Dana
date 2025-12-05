@@ -1,6 +1,7 @@
 package service;
 
 import domain.Media;
+import domain.FineStrategy;
 import domain.OverdueItem;
 
 import java.time.LocalDate;

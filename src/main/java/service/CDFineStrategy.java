@@ -1,4 +1,5 @@
 package service;
+import domain.FineStrategy;
 
 /**
  * Fine strategy for CDs: 20 NIS per overdue day.

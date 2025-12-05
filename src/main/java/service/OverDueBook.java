@@ -28,7 +28,7 @@ public class OverDueBook {
      *              
      */
 	
-	overDueBook(Clock clock){
+	 public overDueBook(Clock clock){
 		this.clock=clock;
 	}
 	
