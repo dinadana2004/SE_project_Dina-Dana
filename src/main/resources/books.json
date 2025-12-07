@@ -84,5 +84,83 @@
     "author": "Dana",
     "isbn": "111",
     "borrowed": false
+  },
+  {
+    "title": "Old",
+    "author": "X",
+    "isbn": "222",
+    "borrowed": true,
+    "borrowedByUser": "alice",
+    "dueDate": "2025-11-07"
+  },
+  {
+    "title": "New",
+    "author": "Y",
+    "isbn": "111",
+    "borrowed": false
+  },
+  {
+    "title": "Java",
+    "author": "Dana",
+    "isbn": "111",
+    "borrowed": false
+  },
+  {
+    "title": "Java",
+    "author": "Dana",
+    "isbn": "111",
+    "borrowed": false
+  },
+  {
+    "title": "Old",
+    "author": "X",
+    "isbn": "222",
+    "borrowed": true,
+    "borrowedByUser": "alice",
+    "dueDate": "2025-11-07"
+  },
+  {
+    "title": "New",
+    "author": "Y",
+    "isbn": "111",
+    "borrowed": false
+  },
+  {
+    "title": "Java",
+    "author": "Dana",
+    "isbn": "111",
+    "borrowed": false
+  },
+  {
+    "title": "Java",
+    "author": "Dana",
+    "isbn": "111",
+    "borrowed": false
+  },
+  {
+    "title": "Old",
+    "author": "X",
+    "isbn": "222",
+    "borrowed": true,
+    "borrowedByUser": "alice",
+    "dueDate": "2025-11-07"
+  },
+  {
+    "title": "New",
+    "author": "Y",
+    "isbn": "111",
+    "borrowed": false
+  },
+  {
+    "title": "Java",
+    "author": "Dana",
+    "isbn": "111",
+    "borrowed": false
+  },
+  {
+    "title": "Java",
+    "author": "Dana",
+    "isbn": "111",
+    "borrowed": false
   }
 ]

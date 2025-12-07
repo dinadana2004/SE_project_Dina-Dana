@@ -7,8 +7,6 @@ import presentation.JsonBookRepository;
 import presentation.JsonUserRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,19 +14,16 @@ class BorrowUnderRestrictiondsTest {
 
    
     private JsonUserRepository mockUserRepo() {
-        return new JsonUserRepository();
+        return new FakeUserRepository();
     }
 
-   
     private JsonBookRepository mockBookRepo() {
-        return new JsonBookRepository();
+        return new FakeBookRepository();
     }
 
-  
     private LoanService mockLoanService(JsonBookRepository br, JsonUserRepository ur) {
         return new LoanService(br, ur);
     }
-
 
     @Test
     void testBorrowSuccess() {
@@ -44,9 +39,11 @@ class BorrowUnderRestrictiondsTest {
         BorrowUnderRestrictionds service =
                 new BorrowUnderRestrictionds(ur, br, admin, loan);
 
-        assertEquals("Borrowed successfully!", service.borrowRestrictions("alice", "111"));
+        String msg = service.borrowRestrictions("alice", "111");
+        // LoanService يرجّع "Book borrowed successfully! Due date: …"
+        assertTrue(msg.startsWith("Book borrowed successfully"),
+                "Expected success borrow message, but was: " + msg);
     }
-
 
     @Test
     void testBorrowUsernameEmpty() {
@@ -58,9 +55,9 @@ class BorrowUnderRestrictiondsTest {
         BorrowUnderRestrictionds service =
                 new BorrowUnderRestrictionds(ur, br, admin, loan);
 
-        assertEquals("username shouldn't be empty", service.borrowRestrictions("", "111"));
+        assertEquals("username shouldn't be empty",
+                service.borrowRestrictions("", "111"));
     }
-
 
     @Test
     void testBorrowIsbnEmpty() {
@@ -72,9 +69,9 @@ class BorrowUnderRestrictiondsTest {
         BorrowUnderRestrictionds service =
                 new BorrowUnderRestrictionds(ur, br, admin, loan);
 
-        assertEquals("isbn shouldn't be empty", service.borrowRestrictions("alice", ""));
+        assertEquals("isbn shouldn't be empty",
+                service.borrowRestrictions("alice", ""));
     }
-
 
     @Test
     void testBorrowUserDoesNotExist() {
@@ -86,16 +83,16 @@ class BorrowUnderRestrictiondsTest {
         BorrowUnderRestrictionds service =
                 new BorrowUnderRestrictionds(ur, br, admin, loan);
 
-        assertEquals("this user does not exist", service.borrowRestrictions("bob", "111"));
+        assertEquals("this user does not exist",
+                service.borrowRestrictions("bob", "111"));
     }
-
 
     @Test
     void testBorrowRejectedDueToUnpaidFines() {
         JsonUserRepository ur = mockUserRepo();
         JsonBookRepository br = mockBookRepo();
 
-        User u = new User("alice", "pw", "mail", 50); 
+        User u = new User("alice", "pw", "mail", 50); // عنده غرامات
         ur.save(u);
         br.save(new Book("Java", "Dana", "111"));
 
@@ -107,10 +104,8 @@ class BorrowUnderRestrictiondsTest {
 
         assertEquals(
                 "this borrowing operation has rejected because this user has unpaid fines,he/she should pay the fines first in order to borrow a book",
-                service.borrowRestrictions("alice", "111")
-        );
+                service.borrowRestrictions("alice", "111"));
     }
-
 
     @Test
     void testBorrowRejectedDueToOverdueBooks() {
@@ -121,7 +116,7 @@ class BorrowUnderRestrictiondsTest {
         ur.save(u);
 
         Book overdue = new Book("Old", "X", "222");
-        overdue.borrow("alice", LocalDate.now().minusDays(30)); 
+        overdue.borrow("alice", LocalDate.now().minusDays(30));
         br.save(overdue);
 
         Book normal = new Book("New", "Y", "111");
@@ -137,4 +132,3 @@ class BorrowUnderRestrictiondsTest {
                 service.borrowRestrictions("alice", "111"));
     }
 }
-

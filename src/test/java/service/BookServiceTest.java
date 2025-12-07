@@ -4,6 +4,7 @@ import domain.Book;
 import org.junit.jupiter.api.Test;
 import presentation.JsonBookRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,5 +105,19 @@ class BookServiceTest {
         BookService service = new BookService(repo);
 
         assertEquals(0, service.search("banana").size());
+    }
+    
+    @Test
+    void testBorrowAndReturn() {
+        Book b = new Book("Java", "James", "111");
+
+        assertFalse(b.isBorrowed());
+
+        b.borrow("dana", LocalDate.now().plusDays(5));
+        assertTrue(b.isBorrowed());
+        assertEquals("dana", b.getBorrowedByUser());
+
+        b.returnBook();
+        assertFalse(b.isBorrowed());
     }
 }

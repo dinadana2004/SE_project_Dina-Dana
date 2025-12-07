@@ -1,39 +1,31 @@
 package presentation;
+
 import domain.Book;
+import domain.CD;
+import domain.OverdueItem;
 import domain.Session;
 import domain.UserSession;
 import service.AdminService;
 import service.BookService;
 import service.UserService;
 import service.LoanService;
-import service.EmailSender;
+import service.MediaService;
+import service.OverdueReportService;
 import service.EmailNotifier;
 import service.ReminderService;
+import service.EmailSender;
+import service.BorrowUnderRestrictionds;   
+import service.UnregisterUser;            
 
 import java.util.List;
 import java.util.Scanner;
 
 /**
  * The main entry point for the Library Management System.
- * <p>
- * This class provides a Command-Line Interface (CLI) for interacting with
- * admin and user features such as logging in, adding books, borrowing books,
- * registering users, and paying fines.
- * </p>
- *
- * <p>The application uses JSON-based repositories for persistence and
- * service classes to handle business logic.</p>
- *
- * @author Dana
- * @version 1.0
+ * Commented out during testing to prevent console execution.
  */
 public class MainCLI {
 
-    /**
-     * Starts the Library Management System CLI and displays the main menu.
-     *
-     * @param args default command-line arguments (unused)
-     */
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -53,14 +45,22 @@ public class MainCLI {
         UserService userService = new UserService(userRepo, userSession);
         LoanService loanService = new LoanService(bookRepo, userRepo);
 
-     // Email configuration (PUT YOUR EMAIL & APP PASSWORD)
-        String gmail = "s12216919@stu.najah.edu";
-        String appPass = "tcgx ovts bvqi dddm";
+        // Sprint 4 services (ADDED ONLY)
+        BorrowUnderRestrictionds borrowRestrictions =
+                new BorrowUnderRestrictionds(userRepo, bookRepo, adminService, loanService);
 
-        // Real email sender
-        EmailSender emailSender = new EmailNotifier(gmail, appPass);
+        UnregisterUser unregisterUser =
+                new UnregisterUser(userRepo, bookRepo, adminService, loanService);
 
-        // Reminder Service
+        // Media (Sprint 5)
+        MediaService mediaService = new MediaService();
+        OverdueReportService mediaReportService = new OverdueReportService(mediaService.getAllMedia());
+
+        // Email (Sprint 3)
+        String senderEmail = "dina.hanna2004@gmail.com";
+        String appPassword = "YOUR_GMAIL_APP_PASSWORD";
+
+        EmailSender emailSender = new EmailNotifier(senderEmail, appPassword);
         ReminderService reminderService = new ReminderService(loanService, userRepo, emailSender);
 
         while (true) {
@@ -68,7 +68,8 @@ public class MainCLI {
             System.out.println("\n====== Library Management System ======");
             System.out.println("1. Admin Menu");
             System.out.println("2. User Menu");
-            System.out.println("3. Exit");
+            System.out.println("3. Media Menu");
+            System.out.println("4. Exit");
             System.out.print("Choose option: ");
 
             int choice = Integer.parseInt(sc.nextLine());
@@ -76,18 +77,21 @@ public class MainCLI {
             switch (choice) {
 
                 case 1:
-                	adminMenu(sc, adminService, bookService, reminderService);
+                    adminMenu(sc, adminService, bookService, reminderService, unregisterUser);
                     break;
 
                 case 2:
-                    userMenu(sc, userService, bookService, loanService);
+                    userMenu(sc, userService, bookService, loanService, borrowRestrictions);
                     break;
 
                 case 3:
+                    mediaMenu(sc, mediaService, userService, mediaReportService);
+                    break;
+
+                case 4:
                     System.out.println("Goodbye!");
                     sc.close();
                     System.exit(0);
-                    break;
 
                 default:
                     System.out.println("Invalid option!");
@@ -99,24 +103,20 @@ public class MainCLI {
     // ADMIN MENU
     // ============================
 
-    /**
-     * Displays and handles the Admin menu options such as login, logout,
-     * and adding books to the library.
-     *
-     * @param sc            the Scanner used to read user input
-     * @param adminService  service handling admin authentication and actions
-     * @param bookService   service used for adding new books
-     */
-    private static void adminMenu(Scanner sc, AdminService adminService,
-            BookService bookService, ReminderService reminderService)
-    {
+    private static void adminMenu(Scanner sc,
+                                  AdminService adminService,
+                                  BookService bookService,
+                                  ReminderService reminderService,
+                                  UnregisterUser unregisterUser) {
+
         while (true) {
             System.out.println("\n--- Admin Menu ---");
             System.out.println("1. Login");
             System.out.println("2. Logout");
             System.out.println("3. Add Book");
             System.out.println("4. Send Overdue Reminders");
-            System.out.println("5. Back");
+            System.out.println("5. Unregister User"); // Sprint 4
+            System.out.println("6. Back");
 
             System.out.print("Choose option: ");
             int choice = Integer.parseInt(sc.nextLine());
@@ -150,16 +150,26 @@ public class MainCLI {
                     break;
 
                 case 4:
-                	 if (!adminService.isLoggedIn()) {
-                         System.out.println("You must login first!");
-                         break;
-                     }
-                	 System.out.println("Sending reminders...");
+                    if (!adminService.isLoggedIn()) {
+                        System.out.println("You must login first!");
+                        break;
+                    }
+                    System.out.println("Sending reminders...");
                     int sent = reminderService.sendReminders();
                     System.out.println("Emails sent: " + sent);
                     break;
 
                 case 5:
+                    if (!adminService.isLoggedIn()) {
+                        System.out.println("You must login first!");
+                        break;
+                    }
+                    System.out.print("Enter username to unregister: ");
+                    String delUser = sc.nextLine();
+                    System.out.println(unregisterUser.unregisterUser(delUser));
+                    break;
+
+                case 6:
                     return;
 
                 default:
@@ -172,17 +182,11 @@ public class MainCLI {
     // USER MENU
     // ============================
 
-    /**
-     * Displays and handles the User menu options including registration,
-     * login, book search, borrowing, and paying fines.
-     *
-     * @param sc           the Scanner used to read user input
-     * @param userService  service managing user authentication and accounts
-     * @param bookService  service for searching and retrieving book data
-     * @param loanService  service managing borrowing and fine payments
-     */
-    private static void userMenu(Scanner sc, UserService userService,
-                                 BookService bookService, LoanService loanService) {
+    private static void userMenu(Scanner sc,
+                                 UserService userService,
+                                 BookService bookService,
+                                 LoanService loanService,
+                                 BorrowUnderRestrictionds borrowRestrictions) {
 
         while (true) {
             System.out.println("\n--- User Menu ---");
@@ -222,11 +226,11 @@ public class MainCLI {
                     break;
 
                 case 4:
-                	if (!userService.isLoggedIn()) {
+                    if (!userService.isLoggedIn()) {
                         System.out.println("You must login first!");
                         break;
                     }
-                	System.out.print("Keyword:(Title/Author/ISBN) ");
+                    System.out.print("Keyword:(Title/Author/ISBN) ");
                     List<Book> r = bookService.search(sc.nextLine());
                     if (r.isEmpty()) System.out.println("No results.");
                     else r.forEach(b -> {
@@ -242,7 +246,9 @@ public class MainCLI {
                     System.out.print("Enter ISBN to borrow: ");
                     String isbn = sc.nextLine();
                     String username = userService.getLoggedUser().getUsername();
-                    System.out.println(loanService.borrowBook(username, isbn));
+
+                    // Sprint 4 (Borrow Restrictions)
+                    System.out.println(borrowRestrictions.borrowRestrictions(username, isbn));
                     break;
 
                 case 6:
@@ -257,6 +263,80 @@ public class MainCLI {
                     break;
 
                 case 7:
+                    return;
+
+                default:
+                    System.out.println("Invalid option!");
+            }
+        }
+    }
+
+    // ============================
+    // MEDIA MENU — Sprint 5
+    // ============================
+
+    private static void mediaMenu(Scanner sc, MediaService mediaService,
+                                  UserService userService,
+                                  OverdueReportService mediaReportService) {
+
+        while (true) {
+            System.out.println("\n--- Media Menu ---");
+            System.out.println("1. Add CD");
+            System.out.println("2. Borrow CD");
+            System.out.println("3. View Mixed Overdue Report");
+            System.out.println("4. Back");
+
+            System.out.print("Choose option: ");
+            int choice = Integer.parseInt(sc.nextLine());
+
+            switch (choice) {
+
+                case 1:
+                    System.out.print("CD Title: ");
+                    String title = sc.nextLine();
+
+                    System.out.print("Artist: ");
+                    String artist = sc.nextLine();
+
+                    mediaService.addMedia(new CD(title, artist));
+                    System.out.println("CD added successfully!");
+                    break;
+
+                case 2:
+                    if (!userService.isLoggedIn()) {
+                        System.out.println("You must login first!");
+                        break;
+                    }
+
+                    System.out.print("Enter CD title: ");
+                    String cdTitle = sc.nextLine();
+
+                    String username = userService.getLoggedUser().getUsername();
+                    System.out.println(mediaService.borrowMedia(username, cdTitle));
+                    break;
+
+                case 3:
+                    List<OverdueItem> report =
+                            mediaReportService.generateReport(java.time.LocalDate.now());
+
+                    if (report.isEmpty()) {
+                        System.out.println("No overdue media items.");
+                    } else {
+                        int total = mediaReportService.calculateTotalFine(report);
+                        System.out.println("=== Overdue Media Report ===");
+
+                        for (OverdueItem item : report) {
+                            System.out.println(
+                                    item.getMedia().getMediaType() + " | " +
+                                    item.getMedia().getTitle() + " | Fine: " + item.getFineAmount() + " NIS"
+                            );
+                        }
+
+                        System.out.println("Total Fine: " + total + " NIS");
+                    }
+                    break;
+
+                case 4:
                     return;
 
                 default:

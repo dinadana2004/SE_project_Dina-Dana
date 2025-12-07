@@ -1,70 +1,54 @@
 package service;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.util.Properties;
 
 /**
- * Sends real emails using Gmail SMTP service.
- * This implementation is used in the live application (not in tests).
- *
- * <p>Requires Gmail App Password (not regular password).</p>
- *
- * @author Dana
- * @version 1.0
+ * Real email sender using Gmail SMTP & Jakarta Mail API.
  */
 public class EmailNotifier implements EmailSender {
 
-    private final String fromEmail;
-    private final String appPassword;
+    private final String username;
+    private final String password;
 
-    /**
-     * Constructs a real email sender using the provided Gmail address and
-     * Gmail App Password.
-     *
-     * @param fromEmail   sender Gmail address
-     * @param appPassword Gmail App Password
-     */
-    public EmailNotifier(String fromEmail, String appPassword) {
-        this.fromEmail = fromEmail;
-        this.appPassword = appPassword;
+    public EmailNotifier(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    /**
-     * Sends a real email using Gmail SMTP.
-     *
-     * @param to      receiver email address
-     * @param subject email subject line
-     * @param body    email body content
-     * @return true if email successfully sent, false otherwise
-     */
     @Override
     public boolean sendEmail(String to, String subject, String body) {
         try {
-            Properties p = new Properties();
-            p.put("mail.smtp.host", "smtp.gmail.com");
-            p.put("mail.smtp.port", "587");
-            p.put("mail.smtp.auth", "true");
-            p.put("mail.smtp.starttls.enable", "true");
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
 
-            Session session = Session.getInstance(p, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(fromEmail, appPassword);
-                }
-            });
+            jakarta.mail.Session session = jakarta.mail.Session.getInstance(props,
+                    new Authenticator() {
+                        @Override
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
 
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(fromEmail));
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            msg.setSubject(subject);
-            msg.setText(body);
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(to)
+            );
+            message.setSubject(subject);
+            message.setText(body);
 
-            Transport.send(msg);
+            Transport.send(message);
             return true;
 
         } catch (Exception e) {
+            System.out.println("Email sending failed: " + e.getMessage());
             return false;
         }
     }

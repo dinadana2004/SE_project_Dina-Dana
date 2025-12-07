@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Mock implementation of EmailSender used for testing.
- * This mock does not send real emails; instead, it stores messages
- * in memory for verification.
- *
- * @author Dana
- * @version 1.0
+ * Mock email sender used during testing (no real emails sent).
  */
 public class MockEmailSender implements EmailSender {
 
@@ -21,11 +16,6 @@ public class MockEmailSender implements EmailSender {
         return true;
     }
 
-    /**
-     * Returns a list of all recorded email messages.
-     *
-     * @return list of sent messages (simulated)
-     */
     public List<String> getLogs() {
         return logs;
     }

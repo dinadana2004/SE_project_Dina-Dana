@@ -148,10 +148,7 @@ class UserServiceTest {
         assertEquals("A user is already logged in!", service.login("dana", "1234"));
     }
 
-    // ==========================
-    //   LOGOUT TESTS
-    // ==========================
-
+    
     @Test
     void testLogoutSuccess() {
         JsonUserRepository repo = mockUserRepo(new ArrayList<>());
@@ -172,5 +169,22 @@ class UserServiceTest {
         UserService service = new UserService(repo, session);
 
         assertEquals("No user is logged in!", service.logout());
+    }
+    
+    
+    @Test
+    void testUserFineBalance() {
+        User u = new User("dana", "123", "mail");
+
+        assertFalse(u.hasUnpaidFines());
+
+        u.addFine(20);
+        assertTrue(u.hasUnpaidFines());
+
+        u.payFine(10);
+        assertEquals(10, u.getFineBalance());
+
+        u.payFine(50); // overpay resets to 0
+        assertEquals(0, u.getFineBalance());
     }
 }

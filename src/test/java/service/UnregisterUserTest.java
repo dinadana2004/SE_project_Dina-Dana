@@ -2,12 +2,11 @@ package service;
 
 import domain.User;
 import domain.Book;
-import domain.Admin;
 import org.junit.jupiter.api.Test;
-import presentation.JsonAdminRepository;
 import presentation.JsonBookRepository;
 import presentation.JsonUserRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UnregisterUserTest {
 
-   
+    // Fake User Repository to avoid modifying JSON files
     private JsonUserRepository mockUserRepo(List<User> initial) {
         return new JsonUserRepository() {
 
@@ -35,14 +34,18 @@ class UnregisterUserTest {
             public User findUser(String username) {
                 return users.stream()
                         .filter(u -> u.getUsername().equalsIgnoreCase(username))
-                        .findFirst().orElse(null);
+                        .findFirst()
+                        .orElse(null);
             }
 
             @Override
-            public void update() { }
+            public void update() {
+                // No file update during tests
+            }
         };
     }
 
+    // Fake Book Repository
     private JsonBookRepository mockBookRepo(List<Book> initial) {
         return new JsonBookRepository() {
 
@@ -62,16 +65,20 @@ class UnregisterUserTest {
             public Book findByIsbn(String isbn) {
                 return books.stream()
                         .filter(b -> b.getIsbn().equalsIgnoreCase(isbn))
-                        .findFirst().orElse(null);
+                        .findFirst()
+                        .orElse(null);
             }
 
             @Override
-            public void update() { }
+            public void update() {
+                // Skip file update
+            }
         };
     }
 
+    // Fake admin service
     private AdminService mockAdminService(boolean loggedIn) {
-        return new AdminService(new JsonAdminRepository()) {
+        return new AdminService(null, new domain.Session()) {
             @Override
             public boolean isLoggedIn() {
                 return loggedIn;
@@ -83,14 +90,16 @@ class UnregisterUserTest {
         return new LoanService(null, null);
     }
 
-   
+    // ------------------ TEST CASES ------------------ //
+
     @Test
     void testAdminNotLoggedIn() {
         JsonUserRepository userRepo = mockUserRepo(new ArrayList<>());
         JsonBookRepository bookRepo = mockBookRepo(new ArrayList<>());
         AdminService adminService = mockAdminService(false);
 
-        UnregisterUser service = new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
+        UnregisterUser service =
+                new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
 
         assertEquals("Only admins can unregister users.",
                 service.unregisterUser("john"));
@@ -102,7 +111,8 @@ class UnregisterUserTest {
         JsonBookRepository bookRepo = mockBookRepo(new ArrayList<>());
         AdminService adminService = mockAdminService(true);
 
-        UnregisterUser service = new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
+        UnregisterUser service =
+                new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
 
         assertEquals("username shouldn't be empty",
                 service.unregisterUser("   "));
@@ -114,7 +124,8 @@ class UnregisterUserTest {
         JsonBookRepository bookRepo = mockBookRepo(new ArrayList<>());
         AdminService adminService = mockAdminService(true);
 
-        UnregisterUser service = new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
+        UnregisterUser service =
+                new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
 
         assertEquals("this user does not exist",
                 service.unregisterUser("unknown"));
@@ -122,14 +133,14 @@ class UnregisterUserTest {
 
     @Test
     void testUserHasUnpaidFines() {
-        User u = new User("john", "pass");
-        u.addFine(10);   // mark as having unpaid fines
+        User u = new User("john", "pass", "john@mail.com", 10); // has fines
 
         JsonUserRepository userRepo = mockUserRepo(List.of(u));
         JsonBookRepository bookRepo = mockBookRepo(new ArrayList<>());
         AdminService adminService = mockAdminService(true);
 
-        UnregisterUser service = new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
+        UnregisterUser service =
+                new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
 
         assertEquals("User has unpaid fines and cannot be unregistered.",
                 service.unregisterUser("john"));
@@ -137,17 +148,18 @@ class UnregisterUserTest {
 
     @Test
     void testUserHasActiveLoans() {
-        User u = new User("john", "pass");
+        User u = new User("john", "pass", "john@mail.com");
 
         Book borrowed = new Book("Java", "Dana", "111");
-        borrowed.setBorrowed(true);
-        borrowed.setBorrowedByUser("john");
+        // Borrow book properly
+        borrowed.borrow("john", LocalDate.now().plusDays(7));
 
         JsonUserRepository userRepo = mockUserRepo(List.of(u));
         JsonBookRepository bookRepo = mockBookRepo(List.of(borrowed));
         AdminService adminService = mockAdminService(true);
 
-        UnregisterUser service = new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
+        UnregisterUser service =
+                new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
 
         assertEquals("User has active loans and cannot be unregistered.",
                 service.unregisterUser("john"));
@@ -155,13 +167,14 @@ class UnregisterUserTest {
 
     @Test
     void testSuccessfulUnregister() {
-        User u = new User("john", "pass");
+        User u = new User("john", "pass", "john@mail.com");
 
         JsonUserRepository userRepo = mockUserRepo(new ArrayList<>(List.of(u)));
         JsonBookRepository bookRepo = mockBookRepo(new ArrayList<>());
         AdminService adminService = mockAdminService(true);
 
-        UnregisterUser service = new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
+        UnregisterUser service =
+                new UnregisterUser(userRepo, bookRepo, adminService, mockLoanService());
 
         assertEquals("User unregistered successfully.",
                 service.unregisterUser("john"));
