@@ -1,77 +1,90 @@
 <project>
-<modelVersion>4.0.0</modelVersion>
-<groupId>com.library</groupId>
-<artifactId>library-system</artifactId>
-<version>1.0</version>
+    <modelVersion>4.0.0</modelVersion>
 
-        <properties>
-  <sonar.organization>dinadana2004</sonar.organization>
-  <sonar.projectKey>dinadana2004_SE_project_Dina-Dana</sonar.projectKey> 
-<sonar.host.url>https://sonarcloud.io</sonar.host.url> 
-</properties>
+    <groupId>com.library</groupId>
+    <artifactId>library-system</artifactId>
+    <version>1.0</version>
 
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
-<dependencies>
-<dependency>
-<groupId>com.google.code.gson</groupId>
-<artifactId>gson</artifactId>
-<version>2.10.1</version>
-</dependency>
-<dependency>
-<groupId>org.junit.jupiter</groupId>
-<artifactId>junit-jupiter</artifactId>
-<version>5.10.0</version>
-<scope>test</scope>
-</dependency>
-<dependency>
-	<groupId>com.sun.mail</groupId>
-	<artifactId>jakarta.mail</artifactId>
-	<version>2.0.1</version>
-</dependency>
-<dependency>
-<groupId>org.mockito</groupId>
-<artifactId>mockito-core</artifactId>
-<version>5.11.0</version>
-<scope>test</scope>
-</dependency>
-</dependencies>
-<build>
-  <build>
-    <plugins>
+        <!-- SonarCloud -->
+        <sonar.organization>dinadana2004</sonar.organization>
+        <sonar.projectKey>dinadana2004_SE_project_Dina-Dana</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <!-- JaCoCo plugin: generates coverage report -->
-        <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.10</version>
+        <!-- Jacoco report path -->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
 
-            <executions>
+    <dependencies>
 
-                <execution>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                    </goals>
-                </execution>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
 
-                <execution>
-                    <id>generate-report</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
-                </execution>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
 
-            </executions>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
 
-            <configuration>
-                <excludes>
-                    <exclude>**/MainCLI.class</exclude>
-                </excludes>
-            </configuration>
-        </plugin>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
 
-    </plugins>
-</build>
-</build>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- Jacoco Coverage plugin -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.10</version>
+
+                <executions>
+
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>generate-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
+
+                <configuration>
+                    <excludes>
+                        <exclude>**/MainCLI.class</exclude>
+                    </excludes>
+                </configuration>
+
+            </plugin>
+
+        </plugins>
+    </build>
 
 </project>
