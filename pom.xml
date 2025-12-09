@@ -1,76 +1,87 @@
 <project>
-<modelVersion>4.0.0</modelVersion>
-<groupId>com.library</groupId>
-<artifactId>library-system</artifactId>
-<version>1.0</version>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.library</groupId>
+    <artifactId>library-system</artifactId>
+    <version>1.0</version>
 
-        <properties>
-  <sonar.organization>dinadana2004</sonar.organization>
-  <sonar.projectKey>dinadana2004_SE_project_Dina-Dana</sonar.projectKey> 
-<sonar.host.url>https://sonarcloud.io</sonar.host.url> 
-</properties>
+    <properties>
+        <sonar.organization>dinadana2004</sonar.organization>
+        <sonar.projectKey>dinadana2004_SE_project_Dina-Dana</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
+        <!-- Required for coverage -->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
 
-<dependencies>
-<dependency>
-<groupId>com.google.code.gson</groupId>
-<artifactId>gson</artifactId>
-<version>2.10.1</version>
-</dependency>
-<dependency>
-<groupId>org.junit.jupiter</groupId>
-<artifactId>junit-jupiter</artifactId>
-<version>5.10.0</version>
-<scope>test</scope>
-</dependency>
-<dependency>
-	<groupId>com.sun.mail</groupId>
-	<artifactId>jakarta.mail</artifactId>
-	<version>2.0.1</version>
-</dependency>
-<dependency>
-<groupId>org.mockito</groupId>
-<artifactId>mockito-core</artifactId>
-<version>5.11.0</version>
-<scope>test</scope>
-</dependency>
-</dependencies>
-<build>
-    <pluginManagement>
-        <plugins>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
 
-            <!-- Needed to run JUnit 5 tests with Maven -->
-           <plugin>
-    <groupId>org.jacoco</groupId>
-    <artifactId>jacoco-maven-plugin</artifactId>
-    <version>0.8.7</version>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
 
-    <executions>
-        <execution>
-            <goals>
-                <goal>prepare-agent</goal>
-            </goals>
-        </execution>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
 
-        <execution>
-            <id>report</id>
-            <phase>prepare-package</phase>
-            <goals>
-                <goal>report</goal>
-            </goals>
-        </execution>
-    </executions>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-    <!-- ADD EXCLUDE HERE -->
-    <configuration>
-        <excludes>
-            <exclude>**/MainCLI.class</exclude>
-        </excludes>
-    </configuration>
+    <build>
+       <build>
+    <plugins>
 
-</plugin>
+        <!-- JaCoCo plugin: generates coverage report -->
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.10</version>
 
-        </plugins>
-    </pluginManagement>
+            <executions>
+
+                <!-- يجهّز الـ agent قبل ما التستات تشتغل -->
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+
+                <!-- يعمل تقرير الـ coverage بعد ما كل التستات تخلص -->
+                <execution>
+                    <id>generate-report</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+
+            </executions>
+
+            <!-- استثناء الـ MainCLI من الـ coverage -->
+            <configuration>
+                <excludes>
+                    <exclude>**/MainCLI.class</exclude>
+                </excludes>
+            </configuration>
+        </plugin>
+
+    </plugins>
 </build>
+    </build>
+
 </project>
