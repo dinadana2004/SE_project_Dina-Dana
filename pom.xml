@@ -36,41 +36,42 @@
 </dependency>
 </dependencies>
 <build>
-    <pluginManagement>
-        <plugins>
+  <build>
+    <plugins>
 
-            <!-- Needed to run JUnit 5 tests with Maven -->
-           <plugin>
-    <groupId>org.jacoco</groupId>
-    <artifactId>jacoco-maven-plugin</artifactId>
-    <version>0.8.7</version>
+        <!-- JaCoCo plugin: generates coverage report -->
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.10</version>
 
-    <executions>
-        <execution>
-            <goals>
-                <goal>prepare-agent</goal>
-            </goals>
-        </execution>
+            <executions>
 
-        <execution>
-            <id>report</id>
-            <phase>prepare-package</phase>
-            <goals>
-                <goal>report</goal>
-            </goals>
-        </execution>
-    </executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
 
-    <!-- ADD EXCLUDE HERE -->
-    <configuration>
-        <excludes>
-            <exclude>**/MainCLI.class</exclude>
-        </excludes>
-    </configuration>
+                <execution>
+                    <id>generate-report</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
 
-</plugin>
+            </executions>
 
-        </plugins>
-    </pluginManagement>
+            <configuration>
+                <excludes>
+                    <exclude>**/MainCLI.class</exclude>
+                </excludes>
+            </configuration>
+        </plugin>
+
+    </plugins>
 </build>
+</build>
+
 </project>
