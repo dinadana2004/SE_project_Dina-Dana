@@ -3,14 +3,14 @@
 <groupId>com.library</groupId>
 <artifactId>library-system</artifactId>
 <version>1.0</version>
-<configuration>
-            <excludes>
-               
-                <exclude>presentation/MainCLI*</exclude>
 
-               
-            </excludes>
-        </configuration>
+        <properties>
+  <sonar.organization>dinadana2004</sonar.organization>
+  <sonar.projectKey>dinadana2004_SE_project_Dina-Dana</sonar.projectKey> 
+<sonar.host.url>https://sonarcloud.io</sonar.host.url> 
+</properties>
+
+
 <dependencies>
 <dependency>
 <groupId>com.google.code.gson</groupId>
@@ -40,39 +40,35 @@
         <plugins>
 
             <!-- Needed to run JUnit 5 tests with Maven -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-                <configuration></configuration>
-            </plugin>
+           <plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.7</version>
 
-            <!-- JaCoCo Plugin -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>prepare-agent</goal>
+            </goals>
+        </execution>
 
-                <executions>
+        <execution>
+            <id>report</id>
+            <phase>prepare-package</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+        </execution>
+    </executions>
 
-                    <!-- Attach JaCoCo agent before running tests -->
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
+    <!-- ADD EXCLUDE HERE -->
+    <configuration>
+        <excludes>
+            <exclude>**/MainCLI.class</exclude>
+        </excludes>
+    </configuration>
 
-                    <!-- Generate report after tests -->
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-
-                </executions>
-            </plugin>
+</plugin>
 
         </plugins>
     </pluginManagement>
