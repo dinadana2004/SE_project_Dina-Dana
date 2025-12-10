@@ -5,79 +5,54 @@ import domain.UserSession;
 import presentation.JsonUserRepository;
 
 /**
- * Service class responsible for managing user-related operations such as
- * registration, login, logout, and retrieving logged-in user information.
+ * Service class responsible for managing users: registration, login and logout.
  *
- * <p>This service interacts with {@link JsonUserRepository} for user data
- * persistence and uses {@link UserSession} to maintain login state.</p>
+ * This version includes refactoring to reduce duplication, improve readability,
+ * and lower cognitive complexity (important for SonarCloud).
  *
  * @author Dana
- * @version 1.0
+ * @version 2.0 (Refactored)
  */
 public class UserService {
 
-    /** Repository used to store and retrieve user accounts. */
-    private JsonUserRepository repo;
+    private final JsonUserRepository repo;
+    private final UserSession session;
 
-    /** Session object used to track the currently logged-in user. */
-    private UserSession session;
-
-    /**
-     * Constructs a UserService with the provided user repository and session manager.
-     *
-     * @param repo    the repository that handles users
-     * @param session the session object managing login state
-     */
     public UserService(JsonUserRepository repo, UserSession session) {
         this.repo = repo;
         this.session = session;
     }
 
-    /**
-     * Registers a new user after validating input and ensuring uniqueness
-     * of both username and email.
-     *
-     * @param username the chosen username
-     * @param password the user's password
-     * @param email    the user's email address
-     * @return a message describing whether registration was successful or failed
-     */
+   
+
     public String registerUser(String username, String password, String email) {
 
-        if (username == null || password == null || email == null ||
-                username.trim().isEmpty() || password.trim().isEmpty() || email.trim().isEmpty()) {
-            return "All fields (username, password, email) are required!";
-        }
+        String validationError = validateRegisterInput(username, password, email);
+        if (validationError != null)
+            return validationError;
 
-        User existing = repo.findUser(username);
-        if (existing != null)
+        if (repo.findUser(username) != null)
             return "Username already exists!";
 
-        for (User u : repo.findAll()) {
-            if (u.getEmail().equalsIgnoreCase(email))
-                return "Email already registered!";
-        }
+        boolean emailExists = repo.findAll().stream()
+                .anyMatch(u -> u.getEmail().equalsIgnoreCase(email));
+
+        if (emailExists)
+            return "Email already registered!";
 
         repo.save(new User(username, password, email));
         return "User registered successfully!";
     }
 
-    /**
-     * Logs in a user by validating the username and password.
-     *
-     * @param username the input username
-     * @param password the input password
-     * @return a status message describing the result of the login attempt
-     */
+
     public String login(String username, String password) {
 
         if (session.isLoggedIn())
             return "A user is already logged in!";
 
-        if (username == null || password == null ||
-                username.trim().isEmpty() || password.trim().isEmpty()) {
-            return "Username or password cannot be empty!";
-        }
+        String validationError = validateLoginInput(username, password);
+        if (validationError != null)
+            return validationError;
 
         User user = repo.findUser(username);
         if (user == null)
@@ -90,37 +65,41 @@ public class UserService {
         return "User login successful!";
     }
 
-    /**
-     * Logs out the currently logged-in user.
-     *
-     * @return a message describing the logout result
-     */
+
     public String logout() {
         if (!session.isLoggedIn())
             return "No user is logged in!";
+
         session.logout();
         return "User logged out successfully!";
     }
 
-    /**
-     * Retrieves the user object associated with the currently logged-in session.
-     *
-     * @return the logged-in {@link User}, or {@code null} if no user is logged in
-     */
+
     public User getLoggedUser() {
-        if (!session.isLoggedIn())
-            return null;
-        return repo.findUser(session.getLoggedUser());
+        return session.isLoggedIn()
+                ? repo.findUser(session.getLoggedUser())
+                : null;
     }
 
-    /**
-     * Checks if a user is currently logged in.
-     *
-     * @return {@code true} if logged in, otherwise {@code false}
-     */
     public boolean isLoggedIn() {
         return session.isLoggedIn();
     }
+
+
     
-  
+    private String validateRegisterInput(String username, String password, String email) {
+        if (isNullOrEmpty(username) || isNullOrEmpty(password) || isNullOrEmpty(email))
+            return "All fields (username, password, email) are required!";
+        return null;
+    }
+
+    private String validateLoginInput(String username, String password) {
+        if (isNullOrEmpty(username) || isNullOrEmpty(password))
+            return "Username or password cannot be empty!";
+        return null;
+    }
+
+    private boolean isNullOrEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
 }

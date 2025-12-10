@@ -46,7 +46,7 @@ class BorrowUnderRestrictiondsTest {
     }
 
     @Test
-    void testBorrowUsernameEmpty() {
+    void testBorrowInputValidations() {
         JsonUserRepository ur = mockUserRepo();
         JsonBookRepository br = mockBookRepo();
         LoanService loan = mockLoanService(br, ur);
@@ -55,34 +55,15 @@ class BorrowUnderRestrictiondsTest {
         BorrowUnderRestrictionds service =
                 new BorrowUnderRestrictionds(ur, br, admin, loan);
 
+        // 1) username empty
         assertEquals("username shouldn't be empty",
                 service.borrowRestrictions("", "111"));
-    }
 
-    @Test
-    void testBorrowIsbnEmpty() {
-        JsonUserRepository ur = mockUserRepo();
-        JsonBookRepository br = mockBookRepo();
-        LoanService loan = mockLoanService(br, ur);
-        AdminService admin = new AdminService(null, new domain.Session());
-
-        BorrowUnderRestrictionds service =
-                new BorrowUnderRestrictionds(ur, br, admin, loan);
-
+        // 2) isbn empty
         assertEquals("isbn shouldn't be empty",
                 service.borrowRestrictions("alice", ""));
-    }
 
-    @Test
-    void testBorrowUserDoesNotExist() {
-        JsonUserRepository ur = mockUserRepo();
-        JsonBookRepository br = mockBookRepo();
-        LoanService loan = mockLoanService(br, ur);
-        AdminService admin = new AdminService(null, new domain.Session());
-
-        BorrowUnderRestrictionds service =
-                new BorrowUnderRestrictionds(ur, br, admin, loan);
-
+        // 3) user does not exist
         assertEquals("this user does not exist",
                 service.borrowRestrictions("bob", "111"));
     }

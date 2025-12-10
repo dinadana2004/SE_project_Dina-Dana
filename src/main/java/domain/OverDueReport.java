@@ -1,33 +1,39 @@
 package domain;
+
 import java.util.List;
 
 /**
- * this is responsible for generating a report that summaries what  book or CD is overdued for a user
- * this report give you the total fines you must pay*/
+ * Represents an overdue media report containing overdue books, overdue CDs,
+ * and the total fine amount owed by the user.
+ *
+ * @author Dana
+ * @version 1.0
+ */
 public class OverDueReport {
-	 private  List<Book> overdueBooks = null;
-	    private  List<CD> overdueCDs = null;
-	    private int totalFine = 0;
-	    
-	    /**
-	     * constructor to construc a report that reprsents the total fines
-	     * @param overdueBooks list of overdue books
-	     * @param overdueCDs list of overdue CD
-	     * @param totalFine combined fine for all media types(CD,Book)
-	     * @return 
-	     *  */
-	    public  void OverdueReport(List<Book> overdueBooks, List<CD> overdueCDs, int totalFine) {
-	        this.overdueBooks = overdueBooks;
-	        this.overdueCDs = overdueCDs;
-	        this.totalFine = totalFine;
-	    }
-	    /** @return overdue books */
-	    public List<Book> getOverdueBooks() { return overdueBooks; }
 
-	    /** @return overdue CDs */
-	    public List<CD> getOverdueCDs() { return overdueCDs; }
+    private final List<Book> overdueBooks;
+    private final List<CD> overdueCDs;
+    private final int totalFine;
 
-	    /** @return total fine amount */
-	    public int getTotalFine() { return totalFine; }
+    /**
+     * Constructs an OverDueReport containing all overdue media for a user.
+     *
+     * @param overdueBooks list of overdue books
+     * @param overdueCDs list of overdue CDs
+     * @param totalFine total fine owed (books + CDs)
+     */
+    public OverDueReport(List<Book> overdueBooks, List<CD> overdueCDs, int totalFine) {
+        this.overdueBooks = overdueBooks;
+        this.overdueCDs = overdueCDs;
+        this.totalFine = totalFine;
+    }
 
+    /** @return overdue books */
+    public List<Book> getOverdueBooks() { return overdueBooks; }
+
+    /** @return overdue CDs */
+    public List<CD> getOverdueCDs() { return overdueCDs; }
+
+    /** @return total fine amount */
+    public int getTotalFine() { return totalFine; }
 }
