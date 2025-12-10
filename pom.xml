@@ -1,42 +1,14 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-<<<<<<< HEAD
+
     <groupId>com.library</groupId>
     <artifactId>library-system</artifactId>
     <version>1.0</version>
-=======
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 
-<<<<<<< HEAD
-    <properties>
-        <sonar.organization>dinadana2004</sonar.organization>
-        <sonar.projectKey>dinadana2004_SE_project_Dina-Dana</sonar.projectKey>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-=======
-    <groupId>com.library</groupId>
-    <artifactId>library-system</artifactId>
-    <version>1.0</version>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
-
-<<<<<<< HEAD
-        <!-- Required for coverage -->
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    </properties>
-=======
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 
-<<<<<<< HEAD
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.10.1</version>
-        </dependency>
-=======
         <!-- SonarCloud -->
         <sonar.organization>dinadana2004</sonar.organization>
         <sonar.projectKey>dinadana2004_SE_project_Dina-Dana</sonar.projectKey>
@@ -79,54 +51,21 @@
 
     <build>
         <plugins>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 
-<<<<<<< HEAD
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.10.0</version>
-            <scope>test</scope>
-        </dependency>
-=======
             <!-- Jacoco Coverage plugin -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.10</version>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 
-<<<<<<< HEAD
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>jakarta.mail</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-=======
                 <executions>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 
-<<<<<<< HEAD
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.11.0</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-=======
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 
-<<<<<<< HEAD
-    <build>
-       <build>
-    <plugins>
-=======
                     <execution>
                         <id>generate-report</id>
                         <phase>verify</phase>
@@ -134,15 +73,7 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 
-<<<<<<< HEAD
-        <!-- JaCoCo plugin: generates coverage report -->
-        <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-           
-=======
                 </executions>
 
                 <configuration>
@@ -152,45 +83,8 @@
                 </configuration>
 
             </plugin>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
 
-<<<<<<< HEAD
-            <executions>
-
-                <!-- يجهّز الـ agent قبل ما التستات تشتغل -->
-                <execution>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                    </goals>
-                </execution>
-
-                <!-- يعمل تقرير الـ coverage بعد ما كل التستات تخلص -->
-                <execution>
-                    <id>generate-report</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
-                </execution>
-
-            </executions>
-
-            <!-- استثناء الـ MainCLI من الـ coverage -->
-            <configuration>
-                <excludes>
-                    <exclude>**/MainCLI.class</exclude>
-                </excludes>
-            </configuration>
-        </plugin>
-
-    </plugins>
-</build>
-    </build>
-
-</project>
-=======
         </plugins>
     </build>
 
 </project>
->>>>>>> branch 'main' of https://github.com/diiinahanna2004/SE_project_Dina-Dana.git
